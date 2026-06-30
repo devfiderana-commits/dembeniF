@@ -2,6 +2,8 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
+const isDevelopment = process.env.NODE_ENV !== 'production';
+
 export default defineConfig({
   plugins: [
     react(),
@@ -9,7 +11,7 @@ export default defineConfig({
   ],
   server: {
     port: 5173,
-    proxy: {
+    proxy: isDevelopment ? {
       '/api': {
         target: 'http://localhost:5000',
         changeOrigin: true,
@@ -17,12 +19,8 @@ export default defineConfig({
       '/uploads': {
         target: 'http://localhost:5000',
         changeOrigin: true,
-      },
-      '/images': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
       }
-    }
+    } : undefined
   },
   build: {
     // Optimizations for production build

@@ -17,6 +17,34 @@ export default defineConfig({
       '/uploads': {
         target: 'http://localhost:5000',
         changeOrigin: true,
+      },
+      '/images': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      }
+    }
+  },
+  build: {
+    // Optimizations for production build
+    minify: 'terser',
+    sourcemap: false,
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+              return 'vendor-react';
+            }
+            if (id.includes('lucide-react') || id.includes('react-icons')) {
+              return 'vendor-ui';
+            }
+            if (id.includes('axios') || id.includes('framer-motion') || id.includes('date-fns')) {
+              return 'vendor-utils';
+            }
+            return 'vendor';
+          }
+        }
       }
     }
   }

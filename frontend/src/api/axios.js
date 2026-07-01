@@ -1,13 +1,12 @@
 import axios from 'axios';
 
 // Determine API base URL based on environment
-// In production: use VITE_API_URL from .env.production
-// In development: use /api (which proxies to localhost via vite.config.js)
+// Use VITE_API_URL in all modes if available, otherwise fallback to production backend
 const getBaseURL = () => {
-  if (import.meta.env.MODE === 'production' && import.meta.env.VITE_API_URL) {
-    return `${import.meta.env.VITE_API_URL}/api`;
-  }
-  return '/api';
+  const apiHost = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || 'https://dembenif.onrender.com';
+  const baseURL = `${apiHost}/api`;
+  console.info('[API] baseURL =', baseURL);
+  return baseURL;
 };
 
 const API = axios.create({
@@ -41,14 +40,10 @@ API.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/login';
+      window.location.replace('/#/login');
     }
-    
-    // Log errors in development
-    if (import.meta.env.MODE === 'development') {
-      console.error('[API] Error:', error.response?.status, error.response?.data || error.message);
-    }
-    
+
+    console.error('[API] Error:', error.response?.status, error.response?.data || error.message);
     return Promise.reject(error);
   }
 );

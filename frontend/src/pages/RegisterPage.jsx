@@ -30,8 +30,8 @@ const RegisterPage = () => {
         email: formData.email,
         password: formData.password,
       };
-      const user = await register(registrationData);
-      navigate(user.role === 'admin' ? '/admin' : '/dashboard');
+      await register(registrationData);
+      navigate('/login');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Erreur lors de l’inscription');
     } finally {

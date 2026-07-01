@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { demandeAPI } from '../../api';
+import { adminAPI } from '../../api';
 import { 
   FileText, Search, Filter, MoreHorizontal, 
   Check, X, Eye, ExternalLink, Mail, Clock
@@ -24,8 +24,8 @@ const AdminDemandes = () => {
 
   const fetchDemandes = async () => {
     try {
-      const res = await demandeAPI.getAll({ statut: filter });
-      setDemandes(res.data.demandes);
+      const res = await adminAPI.getDemandes({ statut: filter });
+      setDemandes(res.data.demandes || res.data.data || []);
     } catch (err) {
       toast.error('Erreur chargement demandes');
     } finally {
@@ -35,7 +35,7 @@ const AdminDemandes = () => {
 
   const handleUpdateStatus = async (id, status) => {
     try {
-      await demandeAPI.updateStatut(id, { statut: status, commentaireAdmin: comment });
+      await adminAPI.respondToDemande(id, { statut: status, commentaireAdmin: comment });
       toast.success('Statut mis à jour !');
       setModalOpen(false);
       setComment('');

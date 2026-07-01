@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { annonceAPI } from '../../api';
+import { actualiteAPI } from '../../api';
 import { 
   Megaphone, Plus, Search, Trash2, Edit2,
   Calendar, User, X, Check, Info, FileText
@@ -27,7 +27,7 @@ const AdminAnnonces = () => {
 
   const fetchAnnonces = async () => {
     try {
-      const res = await annonceAPI.getAll();
+      const res = await actualiteAPI.getAll();
       setAnnonces(res.data.annonces);
     } catch (err) {
       toast.error('Erreur chargement annonces');
@@ -40,10 +40,10 @@ const AdminAnnonces = () => {
     e.preventDefault();
     try {
       if (editingId) {
-        await annonceAPI.update(editingId, form);
+        await actualiteAPI.update(editingId, form);
         toast.success('Annonce mise à jour !');
       } else {
-        await annonceAPI.create(form);
+        await actualiteAPI.create(form);
         toast.success('Annonce publiée !');
       }
       setModalOpen(false);
@@ -64,7 +64,7 @@ const AdminAnnonces = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Supprimer cette annonce ?')) {
       try {
-        await annonceAPI.delete(id);
+        await actualiteAPI.delete(id);
         toast.success('Annonce supprimée');
         fetchAnnonces();
       } catch (err) {

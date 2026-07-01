@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { servicePublicAPI, annonceAPI } from '../api';
+import { serviceAPI, actualiteAPI } from '../api';
 import { 
   FiFileText, FiUser, FiHome, FiHeart, FiUsers, FiInfo,
   FiChevronRight, FiCheckCircle, FiGlobe, FiClock, FiShield,
@@ -22,11 +22,11 @@ const ServicesPublics = () => {
     const loadContent = async () => {
       try {
         const [servicesRes, newsRes] = await Promise.all([
-          servicePublicAPI.getAll(),
-          annonceAPI.getAll({ limit: 2 })
+          serviceAPI.getAll(),
+          actualiteAPI.getAll({ limit: 2 })
         ]);
-        setServices(servicesRes.data.data || []);
-        setNews(newsRes.data.data || []);
+        setServices(servicesRes.data.data || servicesRes.data || []);
+        setNews(newsRes.data.data || newsRes.data || []);
       } catch (err) {
         console.error('Erreur chargement:', err);
       } finally {

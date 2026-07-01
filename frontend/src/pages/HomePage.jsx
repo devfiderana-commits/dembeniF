@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { FiArrowRight, FiCheckCircle, FiUsers, FiSettings, FiActivity } from 'react-icons/fi';
 import MainLayout from '../layouts/MainLayout';
 import { statsData } from '../data/mockData';
-import { galleryAPI } from '../api';
 import { getAssetUrl } from '../utils/urlHelpers';
 
 const Hero = () => {
@@ -130,24 +129,8 @@ const StatsSection = () => {
 };
 
 const GallerySection = () => {
-  const [photos, setPhotos] = React.useState([]);
-
-  React.useEffect(() => {
-    galleryAPI.getAll()
-      .then(res => setPhotos(res.data.photos))
-      .catch(err => console.error(err));
-  }, []);
-
-  if (photos.length === 0) return null;
-
-  return (
-    <section className="py-32 container mx-auto px-6">
-      <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-        <div>
-          <h2 className="text-5xl font-black text-green-950 mb-4 font-['Poppins'] tracking-tighter">Vivre à Dembéni</h2>
-          <p className="text-slate-500 font-medium text-lg">Découvrez la vie communale à travers l'objectif de nos citoyens.</p>
-        </div>
-        <div className="h-px flex-grow bg-slate-100 hidden md:block mx-12 mb-6"></div>
+  // Gallery API not available in backend yet
+  return null;
       </div>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">

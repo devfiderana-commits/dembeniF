@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { userAPI, demandeAPI } from '../../api';
+import { adminAPI } from '../../api';
 import { 
   Users, FileText, CheckCircle, Clock, 
   ArrowUpRight, ArrowDownRight, TrendingUp,
@@ -28,7 +28,7 @@ const AdminStats = () => {
 
   const fetchStats = async () => {
     try {
-      const res = await userAPI.getStats();
+      const res = await adminAPI.getStats();
       setStats(res.data.stats);
     } catch (err) {
       toast.error('Erreur lors du chargement des statistiques');

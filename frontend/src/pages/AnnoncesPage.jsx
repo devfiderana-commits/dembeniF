@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { annonceAPI } from '../api';
+import { actualiteAPI } from '../api';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Megaphone, Calendar, User, ChevronRight, Bookmark } from 'lucide-react';
@@ -16,8 +16,8 @@ const AnnoncesPage = () => {
 
   const fetchAnnonces = async () => {
     try {
-      const res = await annonceAPI.getAll();
-      setAnnonces(res.data.annonces);
+      const res = await actualiteAPI.getAll();
+      setAnnonces(res.data.data || res.data || []);
     } catch (err) {
       console.error(err);
     } finally {

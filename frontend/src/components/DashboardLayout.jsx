@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DashboardSidebar from './DashboardSidebar';
 import { FiBell, FiSearch, FiHelpCircle } from 'react-icons/fi';
 import { motion } from 'framer-motion';
-import { demandeAPI } from '../api';
+import { adminAPI } from '../api';
 import { useNavigate } from 'react-router-dom';
 
 const DashboardLayout = ({ children, role = 'user' }) => {
@@ -11,7 +11,7 @@ const DashboardLayout = ({ children, role = 'user' }) => {
 
   useEffect(() => {
     if (role === 'admin') {
-      demandeAPI.getStats()
+      adminAPI.getStats()
         .then(res => setPendingCount(res.data.stats?.en_attente || 0))
         .catch(err => console.error(err));
     }

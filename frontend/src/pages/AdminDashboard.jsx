@@ -14,7 +14,7 @@ import AdminGallery from './admin/AdminGallery';
 import AdminSettings from './admin/AdminSettings';
 
 import { useState, useEffect } from 'react';
-import { demandeAPI } from '../api';
+import { adminAPI } from '../api';
 import { Link } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -33,8 +33,8 @@ const AdminOverview = () => {
     const fetchData = async () => {
       try {
         const [demandesRes, statsRes] = await Promise.all([
-          demandeAPI.getAll({ limit: 5 }),
-          demandeAPI.getStats()
+          adminAPI.getDemandes({ limit: 5 }),
+          adminAPI.getStats()
         ]);
         setRecentDemandes(demandesRes.data.demandes || []);
         setStats(statsRes.data.stats || { total: 0, en_attente: 0, terminee: 0, users: 0 });

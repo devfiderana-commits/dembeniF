@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { reclamationAPI } from '../api';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { 
@@ -26,10 +25,11 @@ const ReclamationsPage = () => {
     fetchReclamations();
   }, []);
 
-  const fetchReclamations = async () => {
+  const fetchReclamations = () => {
     try {
-      const res = await reclamationAPI.getMes();
-      setReclamations(res.data.reclamations);
+      // Load from localStorage (API endpoint doesn't exist yet)
+      const saved = JSON.parse(localStorage.getItem('reclamations') || '[]');
+      setReclamations(saved);
     } catch (err) {
       toast.error('Erreur chargement réclamations');
     } finally {
@@ -40,13 +40,21 @@ const ReclamationsPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await reclamationAPI.create(form);
-      toast.success('Réclamation envoyée !');
+      // Save to localStorage (API endpoint doesn't exist yet)
+      const saved = JSON.parse(localStorage.getItem('reclamations') || '[]');
+      const newReclamation = {
+        _id: Date.now().toString(),
+        ...form,
+        createdAt: new Date().toISOString()
+      };
+      saved.push(newReclamation);
+      localStorage.setItem('reclamations', JSON.stringify(saved));
+      toast.success('Réclamation enregistrée !');
       setForm({ sujet: '', message: '', priorite: 'normale' });
       setShowForm(false);
       fetchReclamations();
     } catch (err) {
-      toast.error('Erreur d’envoi');
+      toast.error('Erreur d'enregistrement');
     }
   };
 

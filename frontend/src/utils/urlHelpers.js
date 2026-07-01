@@ -31,5 +31,6 @@ export const getAssetUrl = (path) => {
  * @returns {string} The API base URL
  */
 export const getApiBaseUrl = () => {
-  return import.meta.env.VITE_API_URL || '/api';
+  const apiHost = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || 'https://dembenif.onrender.com';
+  return `${apiHost}/api`;
 };

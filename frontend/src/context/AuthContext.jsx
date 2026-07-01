@@ -53,9 +53,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (data) => {
     const res = await authAPI.register(data);
     const userData = res.data.data;
-    localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
-    toast.success('Compte créé avec succès ! Veuillez attendre la validation de l\'administration.');
+    toast.success('Compte créé avec succès ! Veuillez vous connecter une fois votre compte validé.');
     return userData;
   };
 

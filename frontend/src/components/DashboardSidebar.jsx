@@ -7,7 +7,7 @@ import {
   FiUsers, FiPieChart, FiInfo, FiImage
 } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
-import { demandeAPI } from '../api';
+import { adminAPI } from '../api';
 import { getAssetUrl } from '../utils/urlHelpers';
 
 const DashboardSidebar = ({ role = 'user' }) => {
@@ -18,7 +18,7 @@ const DashboardSidebar = ({ role = 'user' }) => {
 
   useEffect(() => {
     if (role === 'admin') {
-      demandeAPI.getStats()
+      adminAPI.getStats()
         .then(res => setPendingCount(res.data.stats?.en_attente || 0))
         .catch(err => console.error(err));
     }

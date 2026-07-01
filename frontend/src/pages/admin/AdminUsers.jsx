@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { userAPI } from '../../api';
+import { adminAPI } from '../../api';
 import { 
   Users, Search, Shield, Trash2, 
   ToggleLeft, ToggleRight, Mail, Ban, 
@@ -18,8 +18,8 @@ const AdminUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await userAPI.getAll();
-      setUsers(res.data.users);
+      const res = await adminAPI.getUsers();
+      setUsers(res.data.data);
     } catch (err) {
       toast.error('Erreur chargement utilisateurs');
     } finally {
@@ -27,37 +27,30 @@ const AdminUsers = () => {
     }
   };
 
-  const handleToggleActive = async (id) => {
+  const handleValidateUser = async (id) => {
     try {
-      await userAPI.toggle(id);
-      toast.success('Statut utilisateur modifié');
+      await adminAPI.validateUser(id);
+      toast.success('Utilisateur approuvé');
       fetchUsers();
     } catch (err) {
-      toast.error('Erreur lors de la modification');
+      toast.error('Erreur lors de la validation');
     }
   };
 
-  const handleRoleChange = async (id, currentRole) => {
-    const newRole = currentRole === 'admin' ? 'citoyen' : 'admin';
-    const confirmMsg = currentRole === 'admin' 
-      ? "Voulez-vous vraiment retirer les droits d'administrateur à cet utilisateur ?" 
-      : "Voulez-vous vraiment promouvoir cet utilisateur en tant qu'administrateur ?";
-    
-    if (window.confirm(confirmMsg)) {
-      try {
-        await userAPI.changeRole(id, newRole);
-        toast.success(`Rôle mis à jour : ${newRole}`);
-        fetchUsers();
-      } catch (err) {
-        toast.error('Erreur lors du changement de rôle');
-      }
+  const handleRejectUser = async (id) => {
+    try {
+      await adminAPI.rejectUser(id);
+      toast.success('Utilisateur rejeté');
+      fetchUsers();
+    } catch (err) {
+      toast.error('Erreur lors du rejet');
     }
   };
 
   const handleDelete = async (id) => {
     if (window.confirm('Supprimer cet utilisateur définitivement ?')) {
       try {
-        await userAPI.delete(id);
+        await adminAPI.deleteUser(id);
         toast.success('Utilisateur supprimé');
         fetchUsers();
       } catch (err) {
@@ -135,25 +128,16 @@ const AdminUsers = () => {
 
                   <div className="flex gap-2">
                      <button 
-                       onClick={() => handleToggleActive(u._id)}
-                       className={`flex-1 py-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all ${
-                         u.actif 
-                          ? 'bg-amber-50 text-amber-600 hover:bg-amber-600 hover:text-white border border-amber-100' 
-                          : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white border border-emerald-100'
-                       }`}
+                       onClick={() => handleValidateUser(u._id)}
+                       className="flex-1 py-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white border border-emerald-100"
                      >
-                       {u.actif ? <><ToggleRight className="w-4 h-4" /> Désactiver</> : <><ToggleLeft className="w-4 h-4" /> Activer</>}
+                       Approuver
                      </button>
                      <button 
-                       onClick={() => handleRoleChange(u._id, u.role)}
-                       className={`px-4 py-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all ${
-                         u.role === 'admin' 
-                          ? 'bg-purple-600 text-white shadow-lg shadow-purple-200' 
-                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                       }`}
-                       title={u.role === 'admin' ? 'Rétrograder en citoyen' : 'Promouvoir en admin'}
+                       onClick={() => handleRejectUser(u._id)}
+                       className="flex-1 py-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border border-red-100"
                      >
-                        <Shield className="w-4 h-4" />
+                       Rejeter
                      </button>
                      <button 
                        onClick={() => handleDelete(u._id)}

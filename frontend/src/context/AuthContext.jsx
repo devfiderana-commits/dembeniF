@@ -21,7 +21,10 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem('token');
     if (token) {
       authAPI.getMe()
-        .then(res => setUser(res.data.user))
+        .then(res => {
+          const userData = res.data.data;
+          setUser(userData);
+        })
         .catch(() => logout())
         .finally(() => setLoading(false));
     } else {
@@ -29,24 +32,31 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const login = async (email, motDePasse) => {
-    const res = await authAPI.login({ email, motDePasse });
-    const { token, user } = res.data;
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
-    setUser(user);
-    toast.success(`Bienvenue, ${user.nom} !`);
-    return user;
+  const login = async (email, password) => {
+    const res = await authAPI.login({ email, password });
+    const { data } = res.data;
+    localStorage.setItem('token', data.token);
+    const userData = {
+      _id: data._id,
+      firstname: data.firstname,
+      lastname: data.lastname,
+      email: data.email,
+      role: data.role,
+      status: data.status
+    };
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
+    toast.success(`Bienvenue, ${userData.firstname} !`);
+    return userData;
   };
 
   const register = async (data) => {
     const res = await authAPI.register(data);
-    const { token, user } = res.data;
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
-    setUser(user);
-    toast.success('Compte créé avec succès !');
-    return user;
+    const userData = res.data.data;
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
+    toast.success('Compte créé avec succès ! Veuillez attendre la validation de l\'administration.');
+    return userData;
   };
 
   const logout = () => {

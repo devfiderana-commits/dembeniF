@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 const LoginPage = () => {
   const [role, setRole] = useState('citoyen');
   const [email, setEmail] = useState('');
-  const [motDePasse, setMotDePasse] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ const LoginPage = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const user = await login(email, motDePasse);
+      const user = await login(email, password);
       navigate(user.role === 'admin' ? '/admin' : '/dashboard');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Identifiants invalides');
@@ -105,8 +105,8 @@ const LoginPage = () => {
                   type="password"
                   required
                   placeholder="Mot de passe"
-                  value={motDePasse}
-                  onChange={(e) => setMotDePasse(e.target.value)}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-10 py-6 rounded-full bg-white/80 border border-white/20 focus:ring-4 focus:ring-green-500/20 text-slate-800 placeholder-slate-400 font-medium shadow-inner transition-all outline-none"
                 />
               </div>

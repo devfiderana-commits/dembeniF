@@ -6,10 +6,10 @@ import toast from 'react-hot-toast';
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
-    prenom: '',
-    nom: '',
+    firstname: '',
+    lastname: '',
     email: '',
-    motDePasse: '',
+    password: '',
     confirmPassword: '',
     role: 'citoyen'
   });
@@ -19,14 +19,16 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.motDePasse !== formData.confirmPassword) {
+    if (formData.password !== formData.confirmPassword) {
       return toast.error('Les mots de passe ne correspondent pas');
     }
     setLoading(true);
     try {
       const registrationData = {
-        ...formData,
-        nom: `${formData.prenom} ${formData.nom}`.trim()
+        firstname: formData.firstname,
+        lastname: formData.lastname,
+        email: formData.email,
+        password: formData.password,
       };
       const user = await register(registrationData);
       navigate(user.role === 'admin' ? '/admin' : '/dashboard');
@@ -115,14 +117,14 @@ const RegisterPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input 
                   required placeholder="Prénom" 
-                  value={formData.prenom} 
-                  onChange={e => setFormData({...formData, prenom: e.target.value})} 
+                  value={formData.firstname} 
+                  onChange={e => setFormData({...formData, firstname: e.target.value})} 
                   className="w-full px-6 py-4 rounded-3xl bg-white border-none focus:ring-4 focus:ring-green-500/10 text-slate-800 placeholder-slate-400 font-medium shadow-sm transition-all text-sm"
                 />
                 <input 
                   required placeholder="Nom" 
-                  value={formData.nom} 
-                  onChange={e => setFormData({...formData, nom: e.target.value})} 
+                  value={formData.lastname} 
+                  onChange={e => setFormData({...formData, lastname: e.target.value})} 
                   className="w-full px-6 py-4 rounded-3xl bg-white border-none focus:ring-4 focus:ring-green-500/10 text-slate-800 placeholder-slate-400 font-medium shadow-sm transition-all text-sm"
                 />
               </div>
@@ -137,8 +139,8 @@ const RegisterPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input 
                   required type="password" placeholder="Mot de passe" 
-                  value={formData.motDePasse} 
-                  onChange={e => setFormData({...formData, motDePasse: e.target.value})} 
+                  value={formData.password} 
+                  onChange={e => setFormData({...formData, password: e.target.value})} 
                   className="w-full px-8 py-4 rounded-full bg-white border-none focus:ring-4 focus:ring-green-500/10 text-slate-800 placeholder-slate-400 font-medium shadow-sm transition-all text-sm"
                 />
                 <input 

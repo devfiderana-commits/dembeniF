@@ -129,33 +129,13 @@ const StatsSection = () => {
 };
 
 const GallerySection = () => {
-  // Gallery API not available in backend yet
-  return null;
-      </div>
-      
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-        {photos.slice(0, 8).map((photo, idx) => (
-          <motion.div 
-            key={photo._id}
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: idx * 0.1 }}
-            whileHover={{ y: -12 }}
-            className="group h-[400px] rounded-[3rem] overflow-hidden shadow-2xl border border-slate-100 transition-all relative"
-          >
-            <img 
-              src={getAssetUrl(photo.imageUrl)} 
-              alt={photo.titre} 
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-green-950/90 via-green-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
-              <p className="text-white font-black text-lg uppercase tracking-tight leading-tight mb-2">{photo.titre}</p>
-              <div className="flex items-center gap-2">
-                 <span className="px-3 py-1 bg-green-700 text-white text-[10px] font-black uppercase tracking-widest rounded-full">{photo.categorie}</span>
-              </div>
-            </div>
-          </motion.div>
-        ))}
+  return (
+    <section className="py-20 bg-slate-50">
+      <div className="container mx-auto px-6">
+        <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm text-center">
+          <h3 className="text-xl font-black text-green-950 mb-2">Galerie (bientôt disponible)</h3>
+          <p className="text-slate-500">La galerie sera activée lorsque le backend la prendra en charge.</p>
+        </div>
       </div>
     </section>
   );

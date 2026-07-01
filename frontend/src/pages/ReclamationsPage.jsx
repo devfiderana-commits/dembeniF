@@ -53,9 +53,9 @@ const ReclamationsPage = () => {
       setForm({ sujet: '', message: '', priorite: 'normale' });
       setShowForm(false);
       fetchReclamations();
-    } catch (err) {
-      toast.error('Erreur d'enregistrement');
-    }
+      } catch (err) {
+         toast.error("Erreur d'enregistrement");
+      }
   };
 
   const getStatusBadge = (s) => {

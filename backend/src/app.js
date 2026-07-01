@@ -9,33 +9,32 @@ const app = express();
 // Trust Render proxy
 app.set('trust proxy', 1);
 
-// CORS configuration
+// Allowed origins (FRONTEND ONLY)
 const allowedOrigins = [
     'http://localhost:5173',
     'https://dembenif-1.onrender.com'
 ];
 
+// CORS config CLEAN
 const corsOptions = {
     origin: (origin, callback) => {
-        // Autoriser les requêtes sans Origin (curl, Postman...)
-        if (!origin) {
-            return callback(null, true);
-        }
+        if (!origin) return callback(null, true);
 
         if (allowedOrigins.includes(origin)) {
             return callback(null, true);
         }
 
-        console.error(`❌ CORS - Origin refusée : ${origin}`);
-        return callback(new Error(`CORS policy: Origin not allowed - ${origin}`));
+        console.error(`❌ CORS blocked origin: ${origin}`);
+        return callback(null, false);
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 };
 
-// Active CORS pour toutes les routes
+// Middlewares
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import { authAPI } from '../api';
 import { getAssetUrl } from '../utils/urlHelpers';
 import { 
@@ -11,12 +11,13 @@ import toast from 'react-hot-toast';
 
 const ProfilePage = () => {
   const { user, updateUser } = useAuth();
+  const userFullName = `${user?.firstname || ''} ${user?.lastname || ''}`.trim();
   
   const [form, setForm] = useState({
-    nom: user?.nom || '',
+    nom: userFullName,
     email: user?.email || '',
-    telephone: user?.telephone || '',
-    adresse: user?.adresse || ''
+    telephone: user?.phone || '',
+    adresse: user?.address || ''
   });
 
   const [pwd, setPwd] = useState({
@@ -93,14 +94,14 @@ const ProfilePage = () => {
               
               <div className="relative inline-block mt-4 mb-6">
                 <div className="w-32 h-32 rounded-[2.5rem] bg-white border-8 border-white flex items-center justify-center text-green-600 text-5xl font-black shadow-2xl relative z-10 transition-transform group-hover:scale-105 duration-500 overflow-hidden">
-                  {user?.avatar ? (
+                  {user?.profileImage ? (
                     <img 
-                      src={getAssetUrl(user.avatar)} 
-                      alt={user.nom} 
+                      src={getAssetUrl(user.profileImage)} 
+                      alt={userFullName || 'Profil'} 
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    user?.nom?.charAt(0).toUpperCase()
+                    userFullName?.charAt(0)?.toUpperCase() || 'U'
                   )}
                 </div>
                 <label className="absolute -bottom-2 -right-2 w-12 h-12 bg-slate-100 rounded-2xl shadow-lg border-4 border-white flex items-center justify-center text-slate-400 hover:bg-green-600 hover:text-white transition-all z-20 active:scale-90 cursor-pointer">
@@ -115,7 +116,7 @@ const ProfilePage = () => {
               </div>
               
               <div className="relative z-10">
-                <h2 className="font-black text-slate-900 text-xl tracking-tight">{user?.nom}</h2>
+                <h2 className="font-black text-slate-900 text-xl tracking-tight">{userFullName || 'Utilisateur'}</h2>
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-2 bg-slate-50 rounded-full px-4 py-1.5 inline-block border border-slate-100">
                    Role: {user?.role === 'admin' ? 'Administrateur' : 'Citoyen'}
                 </p>

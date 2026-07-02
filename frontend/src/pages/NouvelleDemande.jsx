@@ -5,7 +5,7 @@ import {
   ArrowLeft, Search, Filter, Info, FileText, 
   Upload, CloudUpload, X, Check, Loader, ChevronRight
 } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import toast from 'react-hot-toast';

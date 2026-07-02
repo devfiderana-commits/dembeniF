@@ -33,11 +33,17 @@ const AdminOverview = () => {
     const fetchData = async () => {
       try {
         const [demandesRes, statsRes] = await Promise.all([
-          adminAPI.getDemandes({ limit: 5 }),
+          adminAPI.getDemandes(),
           adminAPI.getStats()
         ]);
-        setRecentDemandes(demandesRes.data.demandes || []);
-        setStats(statsRes.data.stats || { total: 0, en_attente: 0, terminee: 0, users: 0 });
+        const statsData = statsRes.data.data || {};
+        setRecentDemandes(demandesRes.data.data || []);
+        setStats({
+          total: statsData.demands?.total || 0,
+          en_attente: statsData.demands?.pending || 0,
+          terminee: (statsData.demands?.total || 0) - (statsData.demands?.pending || 0),
+          users: statsData.users?.total || 0
+        });
       } catch (err) {
         console.error('Erreur dashboard:', err);
       } finally {
@@ -86,12 +92,12 @@ const AdminOverview = () => {
                     <FiPlus />
                   </div>
                   <div>
-                    <p className="text-slate-900 font-bold text-sm">Nouvelle demande : <span className="text-green-600">{d.service?.nom}</span></p>
+                    <p className="text-slate-900 font-bold text-sm">Nouvelle demande : <span className="text-green-600">{d.title || d.type || 'Demande'}</span></p>
                     <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-1">
-                      Par {d.utilisateur?.nom} • {formatDistanceToNow(new Date(d.createdAt), { addSuffix: true, locale: fr })}
+                      Par {`${d.citizenId?.firstname || ''} ${d.citizenId?.lastname || ''}`.trim() || 'Citoyen'} • {formatDistanceToNow(new Date(d.createdAt), { addSuffix: true, locale: fr })}
                     </p>
                   </div>
-                  <div className={`ml-auto w-2 h-2 rounded-full ${d.statut === 'en_attente' ? 'bg-amber-500' : 'bg-green-500'}`}></div>
+                  <div className={`ml-auto w-2 h-2 rounded-full ${d.status === 'pending' ? 'bg-amber-500' : 'bg-green-500'}`}></div>
                 </div>
               ))
             )}
@@ -106,20 +112,20 @@ const AdminOverview = () => {
             </span>
           </div>
           <div className="space-y-4">
-            {recentDemandes.filter(d => d.statut === 'en_attente').length === 0 ? (
+            {recentDemandes.filter(d => d.status === 'pending').length === 0 ? (
               <p className="text-slate-400 italic text-center py-10">Tous les dossiers sont à jour !</p>
             ) : (
-              recentDemandes.filter(d => d.statut === 'en_attente').slice(0, 3).map((req, i) => (
+              recentDemandes.filter(d => d.status === 'pending').slice(0, 3).map((req, i) => (
                 <Link key={i} to="/admin/demandes" className="flex items-center justify-between p-6 rounded-[1.5rem] bg-slate-50 border border-slate-100 hover:border-green-300 transition-all cursor-pointer group">
                   <div className="flex items-center gap-4">
                      <div className="w-2 h-10 bg-amber-200 rounded-full group-hover:bg-amber-500 transition-colors"></div>
                      <div>
-                        <p className="font-black text-slate-900">{req.utilisateur?.nom}</p>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{req.service?.nom}</p>
+                        <p className="font-black text-slate-900">{`${req.citizenId?.firstname || ''} ${req.citizenId?.lastname || ''}`.trim() || 'Citoyen'}</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{req.title || req.type || 'Demande'}</p>
                      </div>
                   </div>
                   <div className="text-right">
-                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Dossier {req.numero?.substring(0, 8)}</p>
+                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Dossier {req._id?.substring(0, 8)}</p>
                      <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-amber-500 text-white shadow-lg shadow-amber-200">
                         À TRAITER
                      </span>

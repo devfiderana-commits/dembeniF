@@ -28,7 +28,7 @@ const AdminAnnonces = () => {
   const fetchAnnonces = async () => {
     try {
       const res = await actualiteAPI.getAll();
-      setAnnonces(res.data.annonces);
+      setAnnonces(res.data.data || []);
     } catch (err) {
       toast.error('Erreur chargement annonces');
     } finally {
@@ -119,7 +119,7 @@ const AdminAnnonces = () => {
                           </div>
                           <div>
                              <p className="text-sm font-bold text-gray-800">{a.titre}</p>
-                             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{a.categorie}</p>
+                             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{a.categorie?.toLowerCase()}</p>
                           </div>
                        </div>
                     </td>
@@ -132,9 +132,9 @@ const AdminAnnonces = () => {
                     <td className="px-8 py-6">
                        <div className="flex items-center gap-2">
                           <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-[10px] font-bold">
-                            {a.auteur?.nom.charAt(0)}
+                            A
                           </div>
-                          <span className="text-xs font-semibold text-gray-700">{a.auteur?.nom}</span>
+                          <span className="text-xs font-semibold text-gray-700">Administration</span>
                        </div>
                     </td>
                     <td className="px-8 py-6 text-right">

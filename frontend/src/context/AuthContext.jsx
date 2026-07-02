@@ -1,8 +1,7 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { authAPI } from '../api';
 import toast from 'react-hot-toast';
-
-const AuthContext = createContext(null);
+import { AuthContext } from './AuthContextData';
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
@@ -15,35 +14,47 @@ export const AuthProvider = ({ children }) => {
       return null;
     }
   });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => Boolean(localStorage.getItem('token')));
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser(null);
+    toast.success('Déconnexion réussie');
+  };
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
-      authAPI.getMe()
-        .then(res => {
-          const userData = res.data.data;
-          setUser(userData);
-        })
-        .catch(() => logout())
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
+    if (!token) {
+      return;
     }
+
+    authAPI.getMe()
+      .then(res => {
+        const userData = res.data.data;
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+      })
+      .catch(() => logout())
+      .finally(() => setLoading(false));
   }, []);
 
   const login = async (email, password) => {
     const res = await authAPI.login({ email, password });
     const { data } = res.data;
-    localStorage.setItem('token', data.token);
     const userData = {
       _id: data._id,
       firstname: data.firstname,
       lastname: data.lastname,
       email: data.email,
       role: data.role,
-      status: data.status
+      status: data.status,
+      phone: data.phone || '',
+      address: data.address || '',
+      quartier: data.quartier || '',
+      profileImage: data.profileImage || ''
     };
+    localStorage.setItem('token', data.token);
     localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
     toast.success(`Bienvenue, ${userData.firstname} !`);
@@ -57,13 +68,6 @@ export const AuthProvider = ({ children }) => {
     return userData;
   };
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser(null);
-    toast.success('Déconnexion réussie');
-  };
-
   const updateUser = (updatedUser) => {
     setUser(updatedUser);
     localStorage.setItem('user', JSON.stringify(updatedUser));
@@ -74,10 +78,4 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
-};
-
-export const useAuth = () => {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
-  return ctx;
 };

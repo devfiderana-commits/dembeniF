@@ -29,7 +29,7 @@ const AdminServices = () => {
   const fetchServices = async () => {
     try {
       const res = await serviceAPI.getAll();
-      setServices(res.data.services);
+      setServices(res.data.data || []);
     } catch (err) {
       toast.error('Erreur chargement services');
     } finally {
@@ -40,11 +40,20 @@ const AdminServices = () => {
   const handleCreateOrUpdate = async (e) => {
     e.preventDefault();
     try {
+      const payload = {
+        title: form.nom,
+        desc: form.description,
+        fullDesc: form.description,
+        category: form.categorie,
+        hours: form.delaiTraitement,
+        benefits: form.documentsRequis
+      };
+
       if (editingId) {
-        await serviceAPI.update(editingId, form);
+        await serviceAPI.update(editingId, payload);
         toast.success('Service mis à jour');
       } else {
-        await serviceAPI.create(form);
+        await serviceAPI.create(payload);
         toast.success('Nouveau service ajouté');
       }
       setModalOpen(false);
@@ -71,11 +80,11 @@ const AdminServices = () => {
   const startEdit = (s) => {
     setEditingId(s._id);
     setForm({
-      nom: s.nom,
-      description: s.description,
-      categorie: s.categorie,
-      delaiTraitement: s.delaiTraitement,
-      documentsRequis: s.documentsRequis
+      nom: s.title || '',
+      description: s.desc || s.fullDesc || '',
+      categorie: s.category || 'etat-civil',
+      delaiTraitement: s.hours || '',
+      documentsRequis: s.benefits || []
     });
     setModalOpen(true);
   };
@@ -116,12 +125,12 @@ const AdminServices = () => {
                      <button onClick={() => handleDelete(s._id)} className="p-2 text-gray-400 hover:text-red-500 transition-colors"><Trash2 className="w-4 h-4" /></button>
                   </div>
                </div>
-               <h3 className="font-bold text-lg text-gray-900 mb-2 truncate">{s.nom}</h3>
-               <p className="text-xs text-gray-400 uppercase tracking-widest font-bold mb-4">{s.categorie.replace('-', ' ')}</p>
-               <p className="text-sm text-gray-500 line-clamp-2 mb-6 leading-relaxed">{s.description}</p>
+               <h3 className="font-bold text-lg text-gray-900 mb-2 truncate">{s.title}</h3>
+               <p className="text-xs text-gray-400 uppercase tracking-widest font-bold mb-4">{(s.category || 'non spécifié').replace('-', ' ')}</p>
+               <p className="text-sm text-gray-500 line-clamp-2 mb-6 leading-relaxed">{s.desc || s.fullDesc}</p>
                <div className="pt-4 border-t border-gray-50 flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-gray-400 uppercase">DOCS: {s.documentsRequis.length}</span>
-                  <span className="flex items-center gap-1.5 text-xs text-blue-600 font-bold"><Clock className="w-3 h-3" /> {s.delaiTraitement}</span>
+                  <span className="text-[10px] font-bold text-gray-400 uppercase">DOCS: {s.benefits?.length || 0}</span>
+                  <span className="flex items-center gap-1.5 text-xs text-blue-600 font-bold"><Clock className="w-3 h-3" /> {s.hours || 'Non défini'}</span>
                </div>
             </div>
           ))

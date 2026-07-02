@@ -6,7 +6,7 @@ import {
   FiLogOut, FiMessageSquare, FiPlusCircle, FiLayout, FiGrid,
   FiUsers, FiPieChart, FiInfo, FiImage
 } from 'react-icons/fi';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import { adminAPI } from '../api';
 import { getAssetUrl } from '../utils/urlHelpers';
 
@@ -19,7 +19,7 @@ const DashboardSidebar = ({ role = 'user' }) => {
   useEffect(() => {
     if (role === 'admin') {
       adminAPI.getStats()
-        .then(res => setPendingCount(res.data.stats?.en_attente || 0))
+        .then(res => setPendingCount(res.data.data?.demands?.pending || 0))
         .catch(err => console.error(err));
     }
   }, [role]);
@@ -98,14 +98,14 @@ const DashboardSidebar = ({ role = 'user' }) => {
         <div className="bg-slate-50 p-4 rounded-3xl mb-4 border border-slate-100">
            <div className="flex items-center gap-3 mb-1">
               <div className="w-10 h-10 rounded-[12px] bg-white flex items-center justify-center text-green-600 font-bold border border-slate-100 shadow-sm overflow-hidden">
-                {user?.avatar ? (
-                  <img src={getAssetUrl(user.avatar)} alt="avatar" className="w-full h-full object-cover" />
+                {user?.profileImage ? (
+                  <img src={getAssetUrl(user.profileImage)} alt="avatar" className="w-full h-full object-cover" />
                 ) : (
-                  user?.nom?.charAt(0)?.toUpperCase() || 'U'
+                  ((user?.firstname || user?.lastname)?.charAt(0) || 'U').toUpperCase()
                 )}
               </div>
               <div className="overflow-hidden">
-                <p className="text-sm font-black text-gray-900 truncate">{user?.nom}</p>
+                <p className="text-sm font-black text-gray-900 truncate">{`${user?.firstname || ''} ${user?.lastname || ''}`.trim() || 'Utilisateur'}</p>
                 <p className="text-[10px] font-bold text-gray-400 uppercase truncate tracking-wider">{user?.role}</p>
               </div>
            </div>

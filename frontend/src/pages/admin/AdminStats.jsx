@@ -29,7 +29,21 @@ const AdminStats = () => {
   const fetchStats = async () => {
     try {
       const res = await adminAPI.getStats();
-      setStats(res.data.stats);
+      const data = res.data.data || {};
+      const totalDemandes = data.demands?.total || 0;
+      const pendingDemandes = data.demands?.pending || 0;
+      const approvedDemandes = totalDemandes - pendingDemandes;
+
+      setStats({
+        totalUsers: data.users?.total || 0,
+        totalDemandes,
+        totalServices: data.content?.services || 0,
+        totalReclamations: 0,
+        demandesEnAttente: pendingDemandes,
+        demandesTerminees: approvedDemandes,
+        demandesRefusees: 0,
+        demandesAcceptees: approvedDemandes
+      });
     } catch (err) {
       toast.error('Erreur lors du chargement des statistiques');
     } finally {

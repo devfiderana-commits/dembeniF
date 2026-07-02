@@ -12,7 +12,7 @@ const DashboardLayout = ({ children, role = 'user' }) => {
   useEffect(() => {
     if (role === 'admin') {
       adminAPI.getStats()
-        .then(res => setPendingCount(res.data.stats?.en_attente || 0))
+        .then(res => setPendingCount(res.data.data?.demands?.pending || 0))
         .catch(err => console.error(err));
     }
   }, [role]);

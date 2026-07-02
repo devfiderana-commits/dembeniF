@@ -6,7 +6,7 @@ import Footer from '../components/Footer';
 import { 
   ArrowLeft, FileText, Calendar, Clock, User, 
   MapPin, Phone, Download, AlertCircle, CheckCircle, 
-  XCircle, Clock3, MessageSquare
+  XCircle, Clock3, MessageSquare, Info
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
@@ -25,6 +25,9 @@ const DetailDemande = () => {
   const fetchDemande = async () => {
     try {
       const res = await demandeAPI.getOne(id);
+      if (!res.data.demande) {
+        throw new Error('Not found');
+      }
       setDemande(res.data.demande);
     } catch (err) {
       toast.error('Demande non trouvée');
@@ -34,14 +37,12 @@ const DetailDemande = () => {
     }
   };
 
-  const getStatusInfo = (statut) => {
-    switch (statut) {
-      case 'en_attente': return { label: 'En attente', color: 'bg-amber-100 text-amber-700', icon: Clock3 };
-      case 'en_cours': return { label: 'En cours', color: 'bg-blue-100 text-blue-700', icon: Clock };
-      case 'acceptee': return { label: 'Acceptée', color: 'bg-emerald-100 text-emerald-700', icon: CheckCircle };
-      case 'refusee': return { label: 'Refusée', color: 'bg-red-100 text-red-700', icon: XCircle };
-      case 'terminee': return { label: 'Terminée', color: 'bg-gray-100 text-gray-700', icon: CheckCircle };
-      default: return { label: statut, color: 'bg-gray-100 text-gray-700', icon: AlertCircle };
+  const getStatusInfo = (status) => {
+    switch (status) {
+      case 'pending': return { label: 'En attente', color: 'bg-amber-100 text-amber-700', icon: Clock3 };
+      case 'approved': return { label: 'Approuvée', color: 'bg-emerald-100 text-emerald-700', icon: CheckCircle };
+      case 'rejected': return { label: 'Rejetée', color: 'bg-red-100 text-red-700', icon: XCircle };
+      default: return { label: status || 'Inconnu', color: 'bg-gray-100 text-gray-700', icon: AlertCircle };
     }
   };
 
@@ -51,7 +52,7 @@ const DetailDemande = () => {
     </div>
   );
 
-  const status = getStatusInfo(demande.statut);
+  const status = getStatusInfo(demande.status);
   const StatusIcon = status.icon;
 
   return (
@@ -74,9 +75,9 @@ const DetailDemande = () => {
               <div className="p-8">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                   <div>
-                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{demande.numero}</span>
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{demande._id?.substring(0, 8)}</span>
                     <h1 className="text-2xl font-bold text-gray-900 mt-1 font-['Poppins']">
-                      {demande.service?.nom}
+                      {demande.title}
                     </h1>
                   </div>
                   <div className={`flex items-center gap-2 px-4 py-2 rounded-2xl ${status.color}`}>
@@ -93,43 +94,27 @@ const DetailDemande = () => {
                     </p>
                   </div>
 
-                  {demande.commentaireAdmin && (
-                    <div className="bg-blue-50 border border-blue-100 p-6 rounded-2xl">
-                      <h3 className="text-sm font-bold text-blue-900 mb-2 flex items-center gap-2">
-                        <MessageSquare className="w-4 h-4" />
-                        Commentaire de l'administration
-                      </h3>
-                      <p className="text-blue-800 text-sm italic">
-                        "{demande.commentaireAdmin}"
-                      </p>
-                    </div>
-                  )}
-
                   <div>
-                    <h3 className="text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide">Pièces jointes ({demande.documents.length})</h3>
-                    {demande.documents.length === 0 ? (
+                    <h3 className="text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide">Pièces jointes</h3>
+                    {!demande.attachmentUrl ? (
                       <p className="text-sm text-gray-400 italic">Aucun document joint.</p>
                     ) : (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        {demande.documents.map((doc, i) => (
-                          <div key={i} className="flex items-center justify-between p-3 bg-white border border-gray-100 rounded-xl hover:border-blue-200 transition-colors shadow-sm group">
-                            <div className="flex items-center gap-3">
-                              <FileText className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" />
-                              <div className="max-w-[120px] sm:max-w-[150px]">
-                                <p className="text-xs font-semibold text-gray-700 truncate">{doc.nom}</p>
-                                <p className="text-[10px] text-gray-400">{(doc.taille / 1024 / 1024).toFixed(2)} MB</p>
-                              </div>
-                            </div>
-                            <a 
-                              href={`/uploads/${doc.chemin}`} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="p-2 rounded-lg hover:bg-blue-50 text-blue-600 transition-colors"
-                            >
-                              <Download className="w-4 h-4" />
-                            </a>
+                      <div className="flex items-center justify-between p-3 bg-white border border-gray-100 rounded-xl hover:border-blue-200 transition-colors shadow-sm group">
+                        <div className="flex items-center gap-3">
+                          <FileText className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" />
+                          <div className="max-w-[220px]">
+                            <p className="text-xs font-semibold text-gray-700 truncate">{demande.attachmentUrl.split('/').pop()}</p>
+                            <p className="text-[10px] text-gray-400">Pièce jointe disponible</p>
                           </div>
-                        ))}
+                        </div>
+                        <a 
+                          href={demande.attachmentUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="p-2 rounded-lg hover:bg-blue-50 text-blue-600 transition-colors"
+                        >
+                          <Download className="w-4 h-4" />
+                        </a>
                       </div>
                     )}
                   </div>
@@ -165,8 +150,8 @@ const DetailDemande = () => {
                   </div>
                   <div>
                     <p className="text-xs text-gray-400 font-bold uppercase">Demandeur</p>
-                    <p className="text-sm font-semibold text-gray-800">{demande.utilisateur?.nom}</p>
-                    <p className="text-xs text-gray-500">{demande.utilisateur?.email}</p>
+                    <p className="text-sm font-semibold text-gray-800">Vous</p>
+                    <p className="text-xs text-gray-500">{demande.citizenId}</p>
                   </div>
                 </div>
 
@@ -175,15 +160,15 @@ const DetailDemande = () => {
                     <Clock className="w-4 h-4 text-gray-400" />
                   </div>
                   <div>
-                    <p className="text-xs text-gray-400 font-bold uppercase">Délai estimé</p>
-                    <p className="text-sm font-semibold text-gray-800">{demande.service?.delaiTraitement}</p>
+                    <p className="text-xs text-gray-400 font-bold uppercase">Type de demande</p>
+                    <p className="text-sm font-semibold text-gray-800">{demande.type}</p>
                   </div>
                 </div>
               </div>
 
               <div className="mt-8 pt-6 border-t border-gray-50">
                 <p className="text-[11px] text-gray-400 leading-relaxed text-center">
-                  Pour toute question concernant ce dossier, veuillez contacter le service compétent muni de votre numéro de dossier : <strong>{demande.numero}</strong>
+                  Pour toute question concernant ce dossier, veuillez contacter le service compétent muni de votre numéro de dossier : <strong>{demande._id?.substring(0, 8)}</strong>
                 </p>
               </div>
             </div>

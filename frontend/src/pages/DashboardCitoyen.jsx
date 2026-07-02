@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import { demandeAPI } from '../api';
 import { 
   FileText, Clock, CheckCircle, Plus, 
@@ -27,12 +27,13 @@ const DashboardCitoyen = () => {
   const fetchDemandes = async () => {
     try {
       const res = await demandeAPI.getMes();
-      setDemandes(res.data.demandes || []);
+      const demandeList = res.data.data || [];
+      setDemandes(demandeList);
       
-      const newStats = (res.data.demandes || []).reduce((acc, d) => {
+      const newStats = demandeList.reduce((acc, d) => {
         acc.total++;
-        if (d.statut === 'en_attente') acc.en_attente++;
-        if (d.statut === 'terminee') acc.terminee++;
+        if (d.status === 'pending') acc.en_attente++;
+        if (d.status === 'approved') acc.terminee++;
         return acc;
       }, { total: 0, en_attente: 0, terminee: 0 });
       
@@ -44,13 +45,11 @@ const DashboardCitoyen = () => {
     }
   };
 
-  const getStatusStyle = (statut) => {
-    switch (statut) {
-      case 'en_attente': return 'bg-amber-50 text-amber-600 border-amber-100';
-      case 'en_cours': return 'bg-blue-50 text-blue-600 border-blue-100';
-      case 'acceptee': return 'bg-emerald-50 text-emerald-600 border-emerald-100';
-      case 'refusee': return 'bg-red-50 text-red-600 border-red-100';
-      case 'terminee': return 'bg-slate-50 text-slate-500 border-slate-100';
+  const getStatusStyle = (status) => {
+    switch (status) {
+      case 'pending': return 'bg-amber-50 text-amber-600 border-amber-100';
+      case 'approved': return 'bg-emerald-50 text-emerald-600 border-emerald-100';
+      case 'rejected': return 'bg-red-50 text-red-600 border-red-100';
       default: return 'bg-slate-50 text-slate-500 border-slate-100';
     }
   };
@@ -63,7 +62,7 @@ const DashboardCitoyen = () => {
           <div>
             <span className="text-[10px] font-bold text-green-600 uppercase tracking-[0.3em] block mb-2">Tableau de Bord Personnel</span>
             <h1 className="text-4xl font-black text-slate-900 tracking-tight font-['Poppins']">
-              Ravi de vous revoir,<br/>{user?.nom} 👋
+              Ravi de vous revoir,<br/>{`${user?.firstname || ''} ${user?.lastname || ''}`.trim() || user?.email} 👋
             </h1>
           </div>
           <Link 
@@ -129,21 +128,21 @@ const DashboardCitoyen = () => {
                     >
                       <div className="flex items-center gap-6">
                         <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xl ${
-                          demande.service?.categorie === 'identite' ? 'bg-indigo-50 text-indigo-600' : 'bg-emerald-50 text-emerald-600'
+                          demande.type === 'identite' ? 'bg-indigo-50 text-indigo-600' : 'bg-emerald-50 text-emerald-600'
                         }`}>
                           <FileText />
                         </div>
                         <div>
-                          <h3 className="font-bold text-slate-900 group-hover:text-green-700 transition-colors">{demande.service?.nom}</h3>
+                          <h3 className="font-bold text-slate-900 group-hover:text-green-700 transition-colors">{demande.title}</h3>
                           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mt-1">
-                            Ref: {demande.numero?.substring(0, 8)} • {format(new Date(demande.createdAt), 'dd MMM yyyy', { locale: fr })}
+                            Ref: {demande._id?.substring(0, 8)} • {format(new Date(demande.createdAt), 'dd MMM yyyy', { locale: fr })}
                           </p>
                         </div>
                       </div>
                       
                       <div className="flex items-center gap-6">
-                        <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${getStatusStyle(demande.statut)}`}>
-                          {demande.statut?.replace('_', ' ')}
+                        <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${getStatusStyle(demande.status)}`}>
+                          {demande.status?.replace('_', ' ')}
                         </span>
                         <div className="w-10 h-10 rounded-full bg-white border border-slate-100 flex items-center justify-center text-slate-300 group-hover:bg-green-600 group-hover:text-white group-hover:border-green-600 transition-all duration-300 shadow-sm">
                           <ChevronRight className="w-5 h-5" />

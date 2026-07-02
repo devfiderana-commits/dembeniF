@@ -59,10 +59,13 @@ const AdminUsers = () => {
     }
   };
 
-  const filteredUsers = users.filter(u => 
-    u.nom.toLowerCase().includes(search.toLowerCase()) || 
-    u.email.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredUsers = users.filter(u => {
+    const fullName = `${u.firstname || ''} ${u.lastname || ''}`.trim().toLowerCase();
+    return (
+      fullName.includes(search.toLowerCase()) ||
+      u.email?.toLowerCase().includes(search.toLowerCase())
+    );
+  });
 
   return (
     <div className="space-y-6">
@@ -94,13 +97,13 @@ const AdminUsers = () => {
                </div>
                <div className="px-8 pb-8 relative">
                   <div className="w-20 h-20 rounded-3xl border-4 border-white bg-white shadow-xl -mt-10 mb-6 flex items-center justify-center text-blue-600 text-3xl font-bold">
-                    {u.nom.charAt(0).toUpperCase()}
+                    {( `${u.firstname || ''} ${u.lastname || ''}`.trim().charAt(0) || 'U').toUpperCase()}
                   </div>
                   
                   <div className="mb-6">
                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-bold text-lg text-gray-900 truncate">{u.nom}</h3>
-                        {!u.actif && <Ban className="w-4 h-4 text-red-500" />}
+                        <h3 className="font-bold text-lg text-gray-900 truncate">{`${u.firstname || ''} ${u.lastname || ''}`.trim() || 'Utilisateur'}</h3>
+                        {u.status !== 'approved' && <Ban className="w-4 h-4 text-red-500" />}
                      </div>
                      <p className="text-sm text-gray-500 flex items-center gap-2 italic">
                         <Mail className="w-3.5 h-3.5" /> {u.email}
@@ -110,18 +113,18 @@ const AdminUsers = () => {
                   <div className="space-y-3 mb-8">
                      <div className="flex items-center gap-3 text-xs text-gray-500">
                         <Phone className="w-3.5 h-3.5 text-blue-500" /> 
-                        {u.telephone || 'Non spécifié'}
+                        {u.phone || 'Non spécifié'}
                      </div>
                      <div className="flex items-center gap-3 text-xs text-gray-500">
                         <MapPin className="w-3.5 h-3.5 text-blue-500" /> 
-                        <span className="truncate">{u.adresse || 'Aucune adresse'}</span>
+                        <span className="truncate">{u.address || u.quartier || 'Aucune adresse'}</span>
                      </div>
                      <div className="flex items-center justify-between">
                         <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${u.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
                            {u.role}
                         </span>
-                        <span className={`text-[10px] font-bold uppercase ${u.actif ? 'text-emerald-500' : 'text-red-500'}`}>
-                           ● {u.actif ? 'Actif' : 'Désactivé'}
+                        <span className={`text-[10px] font-bold uppercase ${u.status === 'approved' ? 'text-emerald-500' : 'text-red-500'}`}>
+                           ● {u.status === 'approved' ? 'Approuvé' : u.status === 'pending' ? 'En attente' : 'Refusé'}
                         </span>
                      </div>
                   </div>

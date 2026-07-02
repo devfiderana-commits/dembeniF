@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import { X, User, Mail, Lock, Phone, MapPin, UserPlus, ArrowRight, ShieldCheck, Landmark } from 'lucide-react';
 import toast from 'react-hot-toast';
 

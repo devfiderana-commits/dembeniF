@@ -1,13 +1,10 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
-@theme {
+:root {
   --color-brand-primary: #166534;
   --color-brand-secondary: #22c55e;
   --color-brand-dark: #052e16;
-}
-
-:root {
   --primary-color: #166534; /* Green 800 */
   --secondary-color: #15803d; /* Green 700 */
   --accent-color: #22c55e; /* Green 500 */
@@ -19,7 +16,8 @@
 
 @layer base {
   body {
-    @apply text-slate-900 font-sans;
+    color: #0f172a;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: linear-gradient(135deg, #f0fdf4 0%, #fef2f2 100%);
     background-attachment: fixed;
     min-height: 100vh;
@@ -28,31 +26,93 @@
 
 @layer components {
   .glass {
-    @apply backdrop-blur-xl bg-white/40 border border-white/20 shadow-2xl;
+    backdrop-filter: blur(24px);
+    background-color: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
   }
   
   .glass-dark {
-    @apply backdrop-blur-xl bg-black/20 border border-white/10 shadow-2xl;
+    backdrop-filter: blur(24px);
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
   }
   
   .btn-primary {
-    @apply bg-green-700 hover:bg-green-800 text-white px-6 py-2 rounded-lg transition-all transform hover:scale-105 active:scale-95 shadow-md;
+    background-color: #15803d;
+    color: #ffffff;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.75rem;
+    transition: all 0.2s ease;
+    transform: translateZ(0);
+    box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.1), 0 2px 4px -2px rgba(15, 23, 42, 0.1);
   }
-  
+
+  .btn-primary:hover {
+    background-color: #166534;
+    transform: scale(1.05);
+  }
+
+  .btn-primary:active {
+    transform: scale(0.95);
+  }
+
   .btn-contact {
-    @apply bg-gradient-to-r from-green-600 to-red-600 hover:from-green-700 hover:to-red-700 text-white px-6 py-2 rounded-lg transition-all transform hover:scale-105 active:scale-95 shadow-lg;
+    background: linear-gradient(to right, #16a34a, #dc2626);
+    color: #ffffff;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.75rem;
+    transition: all 0.2s ease;
+    transform: translateZ(0);
+    box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.1), 0 4px 6px -4px rgba(15, 23, 42, 0.1);
   }
-  
+
+  .btn-contact:hover {
+    background: linear-gradient(to right, #15803d, #b91c1c);
+    transform: scale(1.05);
+  }
+
+  .btn-contact:active {
+    transform: scale(0.95);
+  }
+
   .btn-secondary {
-    @apply bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-all transform hover:scale-105 active:scale-95 shadow-md;
+    background-color: #16a34a;
+    color: #ffffff;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.75rem;
+    transition: all 0.2s ease;
+    transform: translateZ(0);
+    box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.1), 0 2px 4px -2px rgba(15, 23, 42, 0.1);
+  }
+
+  .btn-secondary:hover {
+    background-color: #166534;
+    transform: scale(1.05);
+  }
+
+  .btn-secondary:active {
+    transform: scale(0.95);
   }
 
   .card-modern {
-    @apply bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-slate-100;
+    background-color: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    transform: translateZ(0);
+    border: 1px solid #e2e8f0;
+  }
+
+  .card-modern:hover {
+    box-shadow: 0 35px 60px -15px rgba(15, 23, 42, 0.2);
+    transform: translateY(-0.5rem);
   }
 
   .gradient-blue {
-    @apply bg-gradient-to-br from-green-600 to-green-800;
+    background: linear-gradient(to bottom right, #16a34a, #0f766e);
   }
 }
 

@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 export default defineConfig({
+  base: '/dembeniF/',
   plugins: [
     react(),
     tailwindcss(),

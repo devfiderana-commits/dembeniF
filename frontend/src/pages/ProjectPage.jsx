@@ -1,4 +1,3 @@
-import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { ShieldCheck, Users, HandIcon, Lightbulb, Zap, Heart } from 'lucide-react';
 
@@ -26,7 +25,6 @@ const ProjectPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
-      <Navbar />
       
       {/* Hero */}
       <section className="bg-brand-primary py-24 text-white relative overflow-hidden">

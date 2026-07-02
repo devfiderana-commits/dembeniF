@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { PrivateRoute, AdminRoute, GuestRoute } from './components/ProtectedRoute';
 import Loader from './components/Loader';
+import Navbar from './components/Navbar';
 
 // Public Pages
 import HomePage from './pages/HomePage';
@@ -14,6 +15,7 @@ import ActualitesPage from './pages/ActualitesPage';
 import DemarchesPage from './pages/DemarchesPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import ProjectPage from './pages/ProjectPage';
 import ActeCivilPage from './pages/ActeCivilPage';
 import ServicesPublics from './pages/ServicesPublics';
 
@@ -42,6 +44,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
+        <Navbar />
         <Toaster position="top-right" reverseOrder={false} />
         <Routes>
           {/* Public Routes */}
@@ -49,6 +52,7 @@ function App() {
           <Route path="/services" element={<ServicesPublics />} />
           <Route path="/actualites" element={<ActualitesPage />} />
           <Route path="/demarches" element={<DemarchesPage />} />
+          <Route path="/project" element={<ProjectPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/demande/acte-civil" element={<ActeCivilPage />} />

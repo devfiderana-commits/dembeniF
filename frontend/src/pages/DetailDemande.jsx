@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { demandeAPI } from '../api';
-import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { 
   ArrowLeft, FileText, Calendar, Clock, User, 
@@ -57,7 +56,6 @@ const DetailDemande = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
-      <Navbar />
       
       <main className="max-w-5xl mx-auto px-4 py-8">
         <button 

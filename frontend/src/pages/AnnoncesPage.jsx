@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { actualiteAPI } from '../api';
-import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Megaphone, Calendar, User, ChevronRight, Bookmark } from 'lucide-react';
 import { format } from 'date-fns';
@@ -27,7 +26,6 @@ const AnnoncesPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
-      <Navbar />
       
       <main className="max-w-5xl mx-auto px-4 py-12">
         <div className="mb-12 text-center">

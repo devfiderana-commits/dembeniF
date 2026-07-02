@@ -6,7 +6,6 @@ import {
   Upload, CloudUpload, X, Check, Loader, ChevronRight
 } from 'lucide-react';
 import { useAuth } from '../context/useAuth';
-import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import toast from 'react-hot-toast';
 
@@ -94,7 +93,6 @@ const NouvelleDemande = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
-      <Navbar />
       
       <main className="max-w-4xl mx-auto px-4 py-8">
         {/* Breadcrumbs / Back button */}

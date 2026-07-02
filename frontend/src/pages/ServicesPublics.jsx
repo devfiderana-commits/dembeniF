@@ -6,7 +6,6 @@ import {
   FiChevronRight, FiCheckCircle, FiGlobe, FiClock, FiShield,
   FiHelpCircle, FiArrowRight, FiExternalLink, FiSearch
 } from 'react-icons/fi';
-import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
 import '../styles/servicepublic.css';
@@ -71,7 +70,6 @@ const ServicesPublics = () => {
 
   return (
     <div className="min-h-screen bg-green-50 font-['Poppins'] selection:bg-green-600 selection:text-white">
-      <Navbar />
 
       {/* 1. Hero Section - The Theme */}
       <section className="sp-hero relative pt-40 pb-24 overflow-hidden">

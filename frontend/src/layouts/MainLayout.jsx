@@ -1,97 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { FiMenu, FiX, FiInfo, FiSearch, FiPhone, FiMail, FiMapPin, FiFacebook, FiTwitter, FiInstagram } from 'react-icons/fi';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '../context/useAuth';
-
-export const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const location = useLocation();
-  const { user } = useAuth();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const navLinks = [
-    { title: "Accueil", path: "/" },
-    { title: "Services", path: "/services" },
-    { title: "Actualités", path: "/actualites" },
-    { title: "Démarches", path: "/demarches" },
-    { title: "À Propos", path: "/about" },
-    { title: "Contact", path: "/contact" },
-  ];
-
-  return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white shadow-lg py-2' : 'bg-white/40 backdrop-blur-md border-b border-white/20 py-4'}`}>
-      <div className="container mx-auto px-6 flex justify-between items-center">
-        <Link to="/" className="flex items-center space-x-2">
-          <div className="w-10 h-10 bg-green-700 rounded-full flex items-center justify-center text-white font-bold text-xl">D</div>
-          <span className={`font-black text-2xl tracking-tighter uppercase text-slate-900`}>Dembéni</span>
-        </Link>
-
-        {/* Desktop Menu */}
-        <div className="hidden md:flex space-x-8 items-center">
-          {navLinks.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
-              className={`font-bold transition-colors ${
-                location.pathname === link.path 
-                  ? 'text-emerald-600 border-b-2 border-emerald-600' 
-                  : 'text-slate-700 hover:text-emerald-600'
-              }`}
-            >
-              {link.title}
-            </Link>
-          ))}
-          <Link 
-            to={user ? (user.role === 'admin' ? '/admin' : '/dashboard') : '/login'} 
-            className={`px-6 py-2.5 rounded-xl font-black transition-all transform hover:scale-105 active:scale-95 shadow-lg uppercase text-xs tracking-widest bg-emerald-600 text-white hover:bg-emerald-700`}
-          >
-            {user ? 'Mon Espace' : 'Connexion'}
-          </Link>
-        </div>
-
-        {/* Mobile button */}
-        <button className="md:hidden text-2xl text-slate-800" onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? <FiX /> : <FiMenu />}
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-t border-slate-100 overflow-hidden"
-          >
-            <div className="flex flex-col p-6 space-y-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className="text-slate-700 font-medium hover:text-blue-600"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {link.title}
-                </Link>
-              ))}
-              <Link to="/login" className="btn-primary text-center" onClick={() => setIsOpen(false)}>Mon Espace</Link>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </nav>
-  );
-};
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { FiPhone, FiMail, FiMapPin, FiFacebook, FiTwitter, FiInstagram } from 'react-icons/fi';
 
 export const Footer = () => {
   return (
@@ -162,7 +71,6 @@ export const Footer = () => {
 const MainLayout = ({ children }) => {
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
       <main className="flex-grow">
         {children}
       </main>

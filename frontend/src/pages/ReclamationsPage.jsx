@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { 
   ShieldAlert, Send, Plus, Search, 
@@ -69,8 +68,7 @@ const ReclamationsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20">
-      <Navbar />
+      <div className="min-h-screen bg-gray-50 pt-20">
       
       <main className="max-w-5xl mx-auto px-4 py-12">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">

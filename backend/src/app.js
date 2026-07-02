@@ -12,7 +12,7 @@ app.set('trust proxy', 1);
 // Allowed origins (FRONTEND ONLY)
 const allowedOrigins = [
     'http://localhost:5173',
-    'https://dembenif-1.onrender.com'
+    'https://devfiderana-commits.github.io'
 ];
 
 // CORS config CLEAN
